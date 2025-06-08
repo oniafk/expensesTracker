@@ -1,9 +1,11 @@
 import styled from "styled-components";
+import { LoginTemplate } from "../index";
+
 export function Login() {
   return (
-    <Container>
-      <h1>Component</h1>
-    </Container>
+    <>
+      <LoginTemplate />
+    </>
   );
 }
 const Container = styled.div``;

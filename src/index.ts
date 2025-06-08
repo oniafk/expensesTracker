@@ -1,4 +1,5 @@
 export * from "./App";
+export * from "./components/molecules/ButtonSave";
 export * from "./components/templates/HomeTemplate";
 export * from "./components/templates/LoginTemplate";
 export * from "./main";

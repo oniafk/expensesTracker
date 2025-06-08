@@ -1,7 +1,11 @@
-import "./App.css";
+import { MyRoutes } from "./index";
 
 function App() {
-  return <h1>App</h1>;
+  return (
+    <>
+      <MyRoutes />
+    </>
+  );
 }
 
 export default App;

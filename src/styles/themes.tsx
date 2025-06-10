@@ -1,4 +1,6 @@
-export const Light = {
+import type { ITheme } from "../types/theme.types";
+
+export const Light: ITheme = {
   body: "#fff",
   text: "#202020",
   bodyRgba: "255, 255, 255",
@@ -32,7 +34,7 @@ export const Light = {
   sizeoficon: "1.4em",
   colorSubtitle: "#2c2c2c",
 };
-export const Dark = {
+export const Dark: ITheme = {
   bgtgderecha: "#21252B",
   body: "#202020",
   text: "#fff",

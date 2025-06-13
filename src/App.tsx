@@ -1,8 +1,8 @@
-import { MyRoutes } from "./index";
 import React from "react";
 import { ThemeProvider } from "styled-components";
 import { ThemeContextProvider } from "./context/ThemeContext";
 import { useTheme } from "./hooks/useTheme";
+import { AppRoutes } from "./routes/AppRoutes";
 
 /**
  * App Content Component - separated to use theme context
@@ -15,7 +15,7 @@ const AppContent: React.FC = () => {
 
   return (
     <ThemeProvider theme={themeStyle}>
-      <MyRoutes />
+      <AppRoutes />
     </ThemeProvider>
   );
 };

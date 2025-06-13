@@ -1,20 +1,40 @@
 import styled from "styled-components";
 import { ButtonSave } from "../molecules/ButtonSave";
 import { v } from "../../styles/variables";
+import { useAuth } from "../../hooks/useAuth";
 
 export function LoginTemplate() {
+  const { signInWithGoogle, isLoading, error, clearError } = useAuth();
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      // Error is handled by the store, but you could add additional logic here
+      console.log("Sign in process completed", error);
+    }
+  };
+
   return (
     <Container $imgBackground={v.imagenfondo}>
       <div className="contentCard">
         <span className="version">version 1.0</span>
         <div className="contentCard_image">
-          <img src={v.logo} alt="" />
+          <img src={v.logo} alt="Expenses Tracker Logo" />
         </div>
         <Title>Expenses tracker</Title>
         <p className="slogan">handle your 💰 income and 💸 expenses</p>
+
+        {error && (
+          <ErrorMessage onClick={clearError}>
+            {error} (Click to dismiss)
+          </ErrorMessage>
+        )}
+
         <ContainerBtn>
           <ButtonSave
-            title="Start with Google"
+            fn={handleGoogleSignIn}
+            title={isLoading ? "Signing in..." : "Start with Google"}
             icon={<v.iconogoogle />}
             bgColor={v.colorSecundario}
           />
@@ -85,4 +105,18 @@ const Title = styled.span`
 const ContainerBtn = styled.div`
   display: flex;
   justify-content: center;
+`;
+const ErrorMessage = styled.div`
+  background-color: #ffe6e6;
+  color: #d00;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: ${({ theme }) => theme.fontsm};
+  cursor: pointer;
+  text-align: center;
+  margin: 8px 0;
+
+  &:hover {
+    background-color: #ffd6d6;
+  }
 `;

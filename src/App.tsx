@@ -4,6 +4,7 @@ import { ThemeContextProvider } from "./context/ThemeContext";
 import { useTheme } from "./hooks/useTheme";
 import { AppRoutes } from "./routes/AppRoutes";
 import { Sidebar, Breakpoints, MobileMenu } from "./index";
+
 /**
  * App Content Component - separated to use theme context
  * This pattern is necessary because we need to consume the ThemeContext
@@ -22,15 +23,24 @@ const AppContent: React.FC = () => {
   return (
     <ThemeProvider theme={themeStyle}>
       <Container>
-        <aside className="Container__sidebar">
-          <Sidebar />
-        </aside>
-        <aside className="Container__mobile-menu">
+        {/* Desktop Sidebar */}
+        <DesktopSidebarWrapper>
+          <Sidebar
+            isOpen={isSidebarOpen}
+            onToggle={toggleSidebar}
+            isMobile={false}
+          />
+        </DesktopSidebarWrapper>
+
+        {/* Mobile Menu */}
+        <MobileMenuWrapper>
           <MobileMenu />
-        </aside>
-        <Containerbody>
+        </MobileMenuWrapper>
+
+        {/* Main Content */}
+        <MainContent $sidebarOpen={isSidebarOpen}>
           <AppRoutes />
-        </Containerbody>
+        </MainContent>
       </Container>
     </ThemeProvider>
   );
@@ -48,33 +58,52 @@ function App() {
   );
 }
 
+interface MainContentProps {
+  $sidebarOpen: boolean;
+}
+
 const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr;
+  min-height: 100vh;
   background-color: ${({ theme }) => theme.bgtotal};
-  .Container__sidebar {
-    display: none;
-  }
-  .Container__mobile-menu {
-    display: block;
-    position: absolute;
-    left: 20px;
-  }
+
   @media ${Breakpoints.tablet} {
-    grid-template-columns: 65px 1fr;
-    .Container__sidebar {
-      display: initial;
-    }
-    .Container__mobile-menu {
-      display: none;
-    }
+    grid-template-columns: auto 1fr;
   }
 `;
 
-const Containerbody = styled.div`
+const DesktopSidebarWrapper = styled.aside`
+  display: none;
+
+  @media ${Breakpoints.tablet} {
+    display: block;
+    grid-column: 1;
+  }
+`;
+
+const MobileMenuWrapper = styled.aside`
+  display: block;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+
+  @media ${Breakpoints.tablet} {
+    display: none;
+  }
+`;
+
+const MainContent = styled.main<MainContentProps>`
+  grid-column: 1;
   width: 100%;
+  padding: 60px 20px 20px 20px; /* Top padding for mobile menu */
+
   @media ${Breakpoints.tablet} {
     grid-column: 2;
+    padding: 20px;
+    margin-left: ${({ $sidebarOpen }) => ($sidebarOpen ? "250px" : "65px")};
+    transition: margin-left 0.3s ease;
   }
 `;
 

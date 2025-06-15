@@ -3,10 +3,15 @@ import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
 import { v } from "../../styles/variables";
 
+interface AuthButtonProps {
+  compact?: boolean;
+}
+
 /**
- * Example component showing how to use the improved auth store
+ * AuthButton component with compact mode support
+ * When compact=true, shows only the user avatar in collapsed sidebar
  */
-export const AuthButton: React.FC = () => {
+export const AuthButton: React.FC<AuthButtonProps> = ({ compact = false }) => {
   const {
     isAuthenticated,
     isLoading,
@@ -46,9 +51,30 @@ export const AuthButton: React.FC = () => {
   }
 
   if (isAuthenticated) {
+    // Compact mode: show only avatar
+    if (compact) {
+      return (
+        <CompactUserContainer
+          onClick={handleSignOut}
+          title={`${userDisplayName} - Click to sign out`}
+        >
+          {userAvatar ? (
+            <UserAvatar src={userAvatar} alt="User avatar" />
+          ) : (
+            <DefaultAvatar>{userDisplayName?.charAt(0) || "U"}</DefaultAvatar>
+          )}
+        </CompactUserContainer>
+      );
+    }
+
+    // Full mode: show avatar + user info
     return (
       <UserContainer>
-        {userAvatar && <UserAvatar src={userAvatar} alt="User avatar" />}
+        {userAvatar ? (
+          <UserAvatar src={userAvatar} alt="User avatar" />
+        ) : (
+          <DefaultAvatar>{userDisplayName?.charAt(0) || "U"}</DefaultAvatar>
+        )}
         <UserInfo>
           <UserName>Hello, {userDisplayName}</UserName>
           <SignOutButton onClick={handleSignOut}>Sign Out</SignOutButton>
@@ -134,11 +160,40 @@ const UserContainer = styled.div`
   border-radius: 8px;
 `;
 
+const CompactUserContainer = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.bg2};
+  }
+`;
+
 const UserAvatar = styled.img`
   width: 40px;
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+`;
+
+const DefaultAvatar = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.primary};
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: ${({ theme }) => theme.fontmd};
 `;
 
 const UserInfo = styled.div`

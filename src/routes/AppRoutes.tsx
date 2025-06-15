@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Login, Home } from "../index";
 import { ProtectedRoute } from "../components/organisms/ProtectedRoute";
 import { useAuth } from "../hooks/useAuth";
@@ -11,53 +11,41 @@ import type { JSX } from "react";
  */
 export function AppRoutes(): JSX.Element {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public Routes */}
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          }
-        />
+    <Routes>
+      {/* Public Routes */}
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
 
-        {/* Protected Routes */}
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
+      {/* Protected Routes */}
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
+      {/* <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      /> */}
 
-        {/* Legacy route support */}
-        <Route
-          path="/asd"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
+      {/* Root redirect logic */}
+      <Route path="/" element={<RootRedirect />} />
 
-        {/* Root redirect logic */}
-        <Route path="/" element={<RootRedirect />} />
-
-        {/* Catch-all redirect */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+      {/* Catch-all redirect */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 
@@ -72,7 +60,7 @@ interface PublicRouteProps {
 
 const PublicRoute: React.FC<PublicRouteProps> = ({
   children,
-  redirectTo = "/home",
+  redirectTo = "/",
 }) => {
   const { isAuthenticated, isInitialized } = useAuth();
 
@@ -113,7 +101,7 @@ const RootRedirect: React.FC = () => {
   }
 
   // Redirect based on authentication status
-  return <Navigate to={isAuthenticated ? "/home" : "/login"} replace />;
+  return <Navigate to={isAuthenticated ? "/" : "/login"} replace />;
 };
 
 /**

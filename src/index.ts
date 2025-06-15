@@ -14,7 +14,6 @@ export * from "./hooks/useTheme";
 export * from "./main";
 export * from "./pages/Home";
 export * from "./pages/Login";
-export * from "./routes/routes";
 export * from "./routes/AppRoutes";
 export * from "./routes/routeConfig";
 export * from "./store/AuthStore";

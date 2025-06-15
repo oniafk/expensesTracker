@@ -208,7 +208,7 @@ const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
   display: flex;
   align-items: center;
   padding: 12px 20px;
-  color: ${({ theme, $isActive }) => ($isActive ? theme.primary : theme.text)};
+  color: ${({ theme, $isActive }) => ($isActive ? theme.bg5 : theme.text)};
   text-decoration: none;
   border-radius: 8px;
   margin: 0 10px;
@@ -218,7 +218,7 @@ const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
 
   &:hover {
     background-color: ${({ theme, $isActive }) =>
-      $isActive ? `${theme.primary}30` : theme.bg2};
+      $isActive ? `${theme.primary}30` : theme.bg4};
     color: ${({ theme }) => theme.primary};
   }
 `;

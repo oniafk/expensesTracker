@@ -6,6 +6,7 @@ export * from "./components/molecules/ButtonSave";
 export * from "./components/organisms/MobileMenu";
 export * from "./components/organisms/ProtectedRoute";
 export * from "./components/organisms/sidebar/Sidebar";
+export * from "./components/organisms/sidebar/SidebarCard";
 export * from "./components/templates/HomeTemplate";
 export * from "./components/templates/LoginTemplate";
 export * from "./context/AuthContextEnhanced";

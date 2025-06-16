@@ -1,7 +1,12 @@
 import { memo, useCallback } from "react";
 import styled from "styled-components";
 import { NavLink, useLocation } from "react-router-dom";
-import { v, LinksArray, SecondarylinksArray } from "../../../index";
+import {
+  v,
+  LinksArray,
+  SecondarylinksArray,
+  SidebarCard,
+} from "../../../index";
 import { useTheme } from "../../../hooks/useTheme";
 import { AuthButton } from "../../atoms/AuthButton";
 
@@ -75,6 +80,9 @@ export const Sidebar = memo<SidebarProps>(
             ))}
           </SecondaryNavList>
         </NavigationSection>
+
+        {/* Sidebar Card */}
+        <SidebarCard isOpen={isOpen} />
 
         {/* Theme Toggle & Auth Section */}
         <FooterSection $isOpen={isOpen}>

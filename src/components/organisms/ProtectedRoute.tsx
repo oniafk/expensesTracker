@@ -32,7 +32,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Show login if not authenticated and auth is not loading
   if (!isLoading && !isAuthenticated) {
-    console.log("🛡️ ProtectedRoute - Redirecting to login");
     return fallback ? <>{fallback}</> : <LoginTemplate />;
   }
 

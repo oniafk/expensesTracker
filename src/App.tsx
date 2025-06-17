@@ -4,6 +4,8 @@ import { ThemeContextProvider } from "./context/ThemeContext";
 import { useTheme } from "./hooks/useTheme";
 import { AppRoutes } from "./routes/AppRoutes";
 import { Sidebar, Breakpoints, MobileMenu } from "./index";
+import { useLocation } from "react-router-dom";
+import { useAuthContext } from "./context/AuthContextEnhanced";
 
 /**
  * App Content Component - separated to use theme context
@@ -11,8 +13,9 @@ import { Sidebar, Breakpoints, MobileMenu } from "./index";
  * from within a component that's wrapped by the ThemeContextProvider
  */
 const AppContent: React.FC = () => {
-  // Use our custom hook to access theme data with full type safety
+  const { pathname } = useLocation();
   const { themeStyle } = useTheme();
+  const { isAuthenticated } = useAuthContext();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -20,28 +23,35 @@ const AppContent: React.FC = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  // Show sidebar only for authenticated users on non-login pages
+  const shouldShowSidebar = isAuthenticated && pathname !== "/login";
+
   return (
     <ThemeProvider theme={themeStyle}>
-      <Container>
-        {/* Desktop Sidebar */}
-        <DesktopSidebarWrapper>
-          <Sidebar
-            isOpen={isSidebarOpen}
-            onToggle={toggleSidebar}
-            isMobile={false}
-          />
-        </DesktopSidebarWrapper>
+      {shouldShowSidebar ? (
+        <Container>
+          {/* Desktop Sidebar */}
+          <DesktopSidebarWrapper>
+            <Sidebar
+              isOpen={isSidebarOpen}
+              onToggle={toggleSidebar}
+              isMobile={false}
+            />
+          </DesktopSidebarWrapper>
 
-        {/* Mobile Menu */}
-        <MobileMenuWrapper>
-          <MobileMenu />
-        </MobileMenuWrapper>
+          {/* Mobile Menu */}
+          <MobileMenuWrapper>
+            <MobileMenu />
+          </MobileMenuWrapper>
 
-        {/* Main Content */}
-        <MainContent $sidebarOpen={isSidebarOpen}>
-          <AppRoutes />
-        </MainContent>
-      </Container>
+          {/* Main Content */}
+          <MainContent $sidebarOpen={isSidebarOpen}>
+            <AppRoutes />
+          </MainContent>
+        </Container>
+      ) : (
+        <AppRoutes />
+      )}
     </ThemeProvider>
   );
 };

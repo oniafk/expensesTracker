@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Login, Home } from "../index";
+import { Login, Home, Settings } from "../index";
 import { ProtectedRoute } from "../components/organisms/ProtectedRoute";
 import { useAuthContext } from "../context/AuthContextEnhanced";
 import type { JSX } from "react";
@@ -32,6 +32,15 @@ export function AppRoutes(): JSX.Element {
         }
       />
 
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Root redirect logic */}
       <Route path="/" element={<RootRedirect />} />
 
@@ -56,8 +65,6 @@ const PublicRoute: React.FC<PublicRouteProps> = ({
 }) => {
   const { isAuthenticated, isLoading } = useAuthContext();
 
-  console.log("🚪 PublicRoute - Auth state:", { isAuthenticated, isLoading });
-
   // Wait for auth to initialize
   if (isLoading) {
     return null; // Or a loading spinner
@@ -65,10 +72,6 @@ const PublicRoute: React.FC<PublicRouteProps> = ({
 
   // Redirect authenticated users away from public routes
   if (isAuthenticated) {
-    console.log(
-      "🚪 PublicRoute - Redirecting authenticated user to:",
-      redirectTo
-    );
     return <Navigate to={redirectTo} replace />;
   }
 
@@ -81,8 +84,6 @@ const PublicRoute: React.FC<PublicRouteProps> = ({
  */
 const RootRedirect: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuthContext();
-
-  console.log("🏠 RootRedirect - Auth state:", { isAuthenticated, isLoading });
 
   // Wait for auth to initialize before redirecting
   if (isLoading) {
@@ -102,7 +103,6 @@ const RootRedirect: React.FC = () => {
 
   // Redirect based on authentication status
   const redirectTo = isAuthenticated ? "/home" : "/login";
-  console.log("🏠 RootRedirect - Redirecting to:", redirectTo);
   return <Navigate to={redirectTo} replace />;
 };
 

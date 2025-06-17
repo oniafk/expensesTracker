@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../supabase/supabase.config";
+import { createUser } from "../supabase/UserService";
 import type { User, Session } from "@supabase/supabase-js";
 
 /**
@@ -14,6 +15,10 @@ interface AuthContextType {
   isAuthenticated: boolean;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
+  insertUsers: (
+    dataProvider: { name: string; picture: string },
+    idAuthSupabase: string
+  ) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -55,8 +60,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth state changed:", event);
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
@@ -101,6 +105,23 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     }
   };
 
+  const insertUsers = async (
+    dataProvider: { name: string; picture: string },
+    idAuthSupabase: string
+  ) => {
+    try {
+      await createUser({
+        name: dataProvider.name,
+        picture: dataProvider.picture,
+        email: user?.email || "",
+        authId: idAuthSupabase,
+      });
+    } catch (error) {
+      console.error("Error inserting user:", error);
+      throw error;
+    }
+  };
+
   const value: AuthContextType = {
     user,
     session,
@@ -108,6 +129,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     isAuthenticated: !!user,
     signInWithGoogle,
     signOut,
+    insertUsers,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

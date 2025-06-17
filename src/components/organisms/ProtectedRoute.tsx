@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useRequireAuth } from "../../hooks/useAuth";
+import { useAuthContext } from "../../context/AuthContextEnhanced";
 import { LoginTemplate } from "../templates/LoginTemplate";
 
 /**
@@ -18,15 +18,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   fallback,
   showLoadingSpinner = true,
 }) => {
-  const {
-    canShowProtectedContent,
-    shouldShowLoading,
-    isAuthenticated,
-    isInitialized,
-  } = useRequireAuth();
+  const { isAuthenticated, isLoading } = useAuthContext();
 
   // Show loading spinner while initializing auth
-  if (shouldShowLoading && showLoadingSpinner) {
+  if (isLoading && showLoadingSpinner) {
     return (
       <LoadingContainer>
         <LoadingSpinner />
@@ -35,13 +30,14 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  // Show login if not authenticated and auth is initialized
-  if (isInitialized && !isAuthenticated) {
+  // Show login if not authenticated and auth is not loading
+  if (!isLoading && !isAuthenticated) {
+    console.log("🛡️ ProtectedRoute - Redirecting to login");
     return fallback ? <>{fallback}</> : <LoginTemplate />;
   }
 
   // Show protected content if authenticated
-  if (canShowProtectedContent) {
+  if (isAuthenticated) {
     return <>{children}</>;
   }
 

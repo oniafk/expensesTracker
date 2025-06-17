@@ -1,17 +1,20 @@
 import styled from "styled-components";
 import { ButtonSave } from "../molecules/ButtonSave";
 import { v } from "../../styles/variables";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuthContext } from "../../context/AuthContextEnhanced";
 
 export function LoginTemplate() {
-  const { signInWithGoogle, isLoading, error, clearError } = useAuth();
+  const { signInWithGoogle, isLoading } = useAuthContext();
+
+  console.log("🔑 LoginTemplate - Auth state:", { isLoading });
 
   const handleGoogleSignIn = async () => {
     try {
+      console.log("🔑 LoginTemplate - Starting Google sign in...");
       await signInWithGoogle();
+      console.log("🔑 LoginTemplate - Google sign in completed");
     } catch (error) {
-      // Error is handled by the store, but you could add additional logic here
-      console.log("Sign in process completed", error);
+      console.error("🔑 LoginTemplate - Google sign in error:", error);
     }
   };
 
@@ -24,12 +27,6 @@ export function LoginTemplate() {
         </div>
         <Title>Expenses tracker</Title>
         <p className="slogan">handle your 💰 income and 💸 expenses</p>
-
-        {error && (
-          <ErrorMessage onClick={clearError}>
-            {error} (Click to dismiss)
-          </ErrorMessage>
-        )}
 
         <ContainerBtn>
           <ButtonSave
@@ -105,18 +102,4 @@ const Title = styled.span`
 const ContainerBtn = styled.div`
   display: flex;
   justify-content: center;
-`;
-const ErrorMessage = styled.div`
-  background-color: #ffe6e6;
-  color: #d00;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-size: ${({ theme }) => theme.fontsm};
-  cursor: pointer;
-  text-align: center;
-  margin: 8px 0;
-
-  &:hover {
-    background-color: #ffd6d6;
-  }
 `;

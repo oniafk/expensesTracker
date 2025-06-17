@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Login, Home } from "../index";
 import { ProtectedRoute } from "../components/organisms/ProtectedRoute";
-import { useAuth } from "../hooks/useAuth";
+import { useAuthContext } from "../context/AuthContextEnhanced";
 import type { JSX } from "react";
 
 /**
@@ -24,21 +24,13 @@ export function AppRoutes(): JSX.Element {
 
       {/* Protected Routes */}
       <Route
-        path="/"
+        path="/home"
         element={
           <ProtectedRoute>
             <Home />
           </ProtectedRoute>
         }
       />
-      {/* <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        }
-      /> */}
 
       {/* Root redirect logic */}
       <Route path="/" element={<RootRedirect />} />
@@ -60,17 +52,23 @@ interface PublicRouteProps {
 
 const PublicRoute: React.FC<PublicRouteProps> = ({
   children,
-  redirectTo = "/",
+  redirectTo = "/home",
 }) => {
-  const { isAuthenticated, isInitialized } = useAuth();
+  const { isAuthenticated, isLoading } = useAuthContext();
+
+  console.log("🚪 PublicRoute - Auth state:", { isAuthenticated, isLoading });
 
   // Wait for auth to initialize
-  if (!isInitialized) {
+  if (isLoading) {
     return null; // Or a loading spinner
   }
 
   // Redirect authenticated users away from public routes
   if (isAuthenticated) {
+    console.log(
+      "🚪 PublicRoute - Redirecting authenticated user to:",
+      redirectTo
+    );
     return <Navigate to={redirectTo} replace />;
   }
 
@@ -82,10 +80,12 @@ const PublicRoute: React.FC<PublicRouteProps> = ({
  * Sends users to appropriate page based on auth status
  */
 const RootRedirect: React.FC = () => {
-  const { isAuthenticated, isInitialized } = useAuth();
+  const { isAuthenticated, isLoading } = useAuthContext();
+
+  console.log("🏠 RootRedirect - Auth state:", { isAuthenticated, isLoading });
 
   // Wait for auth to initialize before redirecting
-  if (!isInitialized) {
+  if (isLoading) {
     return (
       <div
         style={{
@@ -101,7 +101,9 @@ const RootRedirect: React.FC = () => {
   }
 
   // Redirect based on authentication status
-  return <Navigate to={isAuthenticated ? "/" : "/login"} replace />;
+  const redirectTo = isAuthenticated ? "/home" : "/login";
+  console.log("🏠 RootRedirect - Redirecting to:", redirectTo);
+  return <Navigate to={redirectTo} replace />;
 };
 
 /**

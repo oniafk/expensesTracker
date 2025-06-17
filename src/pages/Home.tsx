@@ -5,7 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 export function Home() {
   const { signOut } = useAuth();
   const { user } = useAuth();
-  console.log("User in Home:", user);
+
   return (
     <Container>
       <h1>Home</h1>

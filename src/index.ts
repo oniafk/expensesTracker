@@ -23,6 +23,8 @@ export * from "./store/AuthStore";
 export * from "./styles/breackpoints";
 export * from "./styles/themes";
 export * from "./styles/variables";
+export * from "./supabase/UserService";
+export * from "./supabase/globalSupabase";
 export * from "./supabase/supabase.config";
 export * from "./types/auth.types";
 export * from "./types/styled.d";

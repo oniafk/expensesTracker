@@ -1,19 +1,41 @@
+import { useState } from "react";
+
 import styled from "styled-components";
 import { Header } from "../organisms/Header";
-import { useState } from "react";
+import { Selector } from "../organisms/selector";
+
 export function SettingsTemplate() {
-  const [state, setState] = useState(false);
+  // Separate state for Header component (user dropdown menu)
+  const [headerMenuState, setHeaderMenuState] = useState(false);
+
+  // Separate state for Selector component (currency selector)
+  const [currencySelectorState, setCurrencySelectorState] = useState(false);
+
   return (
     <Container>
       <header className="header">
         <Header
-          stateConfig={{ state: state, setState: () => setState(!state) }}
+          stateConfig={{
+            state: headerMenuState,
+            setState: () => setHeaderMenuState(!headerMenuState),
+          }}
         />
       </header>
       <section className="area1">
         <h1>Settings</h1>
       </section>
-      <section className="area2"></section>
+      <section className="area2">
+        <ContentCard>
+          <span>currency: </span>
+          <Selector
+            color="#000"
+            state={currencySelectorState}
+            onClick={() => setCurrencySelectorState(!currencySelectorState)}
+            text1="USD"
+            text2="EUR"
+          />
+        </ContentCard>
+      </section>
       <section className="main"></section>
     </Container>
   );
@@ -53,4 +75,13 @@ const Container = styled.div`
     grid-area: main;
     background-color: rgba(179, 46, 241, 0.14);
   }
+`;
+const ContentCard = styled.div`
+  display: flex;
+  text-align: start;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  width: 100%;
+  justify-content: center;
 `;
